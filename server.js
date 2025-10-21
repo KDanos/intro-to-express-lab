@@ -1,31 +1,33 @@
-import express, { response } from 'express';
+import express from 'express';
+import morgan from 'morgan';
+// import morgan from 'morgan';
 
 //Set up a server
 const app = express();
 
+//Middlware
+app.use(morgan('dev'))//Morgan logger, simply logs the details of every request the client sends to the server
 
-
+//Routes
 //1. Be Polite, Greet The User
 app.get('/greetings/:userName', (req, res) => {
     res.send(`<h1>Hello there ${req.params.userName}!</h1>`)
 })
 
 //2. Rolling the Dice
-
-app.get('/roll/:myNumber', (req, resp) => {
+app.get('/roll/:myNumber', (req, res) => {
     const myNumber = req.params.myNumber;
     const checkNumber = Number(myNumber);
     if (typeof checkNumber === 'number' && isFinite(checkNumber)) {
         const newNumber = Math.floor(Math.random() * (checkNumber + 1));
-        resp.send(`<h1>You rolled a ${newNumber}!</h1>`)
+        res.send(`<h1>You rolled a ${newNumber}!</h1>`)
     }
     else {
-        resp.send(`<h1>You must specify a number!</h1>`)
+        res.send(`<h1>You must specify a number!</h1>`)
     }
 })
 
 //3. I Want That One
-
 const collectibles = [
     { name: 'shiny ball', price: 5.95 },
     { name: 'autographed picture of a dog', price: 10 },
@@ -34,10 +36,10 @@ const collectibles = [
 
 app.get('/collectibles/:indexNumber', (req, resp) => {
     const myIndex = Number(req.params.indexNumber)
-    if (typeof myIndex === 'number' && isFinite(myIndex) & myIndex < collectibles.length) {
+    if (typeof myIndex === 'number' && isFinite(myIndex) && myIndex < collectibles.length) {
         const myName = collectibles[myIndex].name;
         const myText = `So, you want the ${collectibles[myIndex].name}? For ${collectibles[myIndex].price} it is yours`
-        resp.send(`<h1>S${myText}</h1>`)
+        resp.send(`<h1>${myText}</h1>`)
     } else {
         resp.send('<h1>This item is not in stock yet</h1>')
     }
@@ -56,7 +58,7 @@ const shoes = [
     { name: "Fifty-Inch Heels", price: 175, type: "heel" }
 ];
 
-app.get('/shoes/', (req, resp) => {
+app.get('/shoes/', (req, res) => {
 
     const minPrice = Number(req.query.minPrice);
     const maxPrice = Number(req.query.maxPrice);
@@ -80,7 +82,7 @@ app.get('/shoes/', (req, resp) => {
             responseText += `<br> ${theName} ${theType} at price of  $${thePrice}</br>`
         })
     }
-    resp.send(`<h1>${responseText} </h1>`)
+    res.send(`<h1>${responseText} </h1>`)
 })
 
 
